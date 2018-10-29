@@ -1,0 +1,69 @@
+# Deployment Manager is an infrastructure deployment service that automates
+# the creation and management of Google Cloud Platform resources for you.
+# Write flexible template and configuration files and use them to create 
+# deployments that have a variety of Cloud Platform services, such as Google 
+# Cloud Storage, Google Compute Engine, and Google Cloud SQL configured to
+# work together.
+
+resources:
+- type: compute.v1.instance
+  name: vm-my-first-deployment
+  properties:
+    zone: us-central1-f
+    machineType: https://www.googleapis.com/compute/v1/projects/[MY_PROJECT]/zones/us-central1-f/machineTypes/f1-micro
+    disks:
+    - deviceName: boot
+      type: PERSISTENT
+      boot: true
+      autoDelete: true
+      initializeParams:
+        sourceImage: https://www.googleapis.com/compute/v1/projects/debian-cloud/global/images/family/[IMAGE_NAME]
+    networkInterfaces:
+    - network: https://www.googleapis.com/compute/v1/projects/[MY_PROJECT]/global/networks/default
+      # Access Config required to give the instance a public IP address
+      accessConfigs:
+      - name: External NAT
+        type: ONE_TO_ONE_NAT
+
+# This simple configuration file you just created describes a deployment that contains one virtual machine instance with these properties:
+
+# Zone: us-central1-f
+
+# Machine type: f1-micro
+
+# Root persistent disk: disk-my-first-deployment
+
+# Image: debian-9
+
+# A randomly assigned external IP address
+
+
+# Use the following command to complete the deployment process 
+
+$ gcloud deployment-manager deployments create my-first-deployment --config vm.yaml
+
+# To view the Deployment configuratio file use the following command
+
+1. $ gcloud deployment-manager deployments describe my-first-deployment
+
+# Check out the deployment properties and obtain a manifest from the deployment e.g 
+# id: '5572372507146542525'
+# insertTime: '2017-12-14T12:47:14.353-08:00'
+# manifest: manifest-1513284434359
+# name: my-first-deployment
+# operation:
+#   endTime: '2017-12-14T12:47:31.659-08:00'
+#   name: operation-1513284434171-56052fd249478-5e243958-c72313e7
+#   operationType: insert
+#   progress: 100
+#   startTime: '2017-12-14T12:47:14.498-08:00'
+#   status: DONE
+#   user: gcpstaging9374_student@qwiklabs.net
+# NAME                    TYPE                 STATE      INTENT
+# vm-my-first-deployment  compute.v1.instance  COMPLETED
+
+# View the Deployment's manifest configuration 
+
+2. $ gcloud deployment-manager manifests describe <manifest-[TIMESTAMP]> --deployment my-first-deployment
+
+
